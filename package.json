@@ -4,30 +4,23 @@
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {
-    "browserify":"*",
-    "envify": "^1.2.1",
     "es6-promise": "*",
-    "fuzzy": "^0.1.0",
-    "gulp": "*",
-    "gulp-browserify": "*",
-    "gulp-uglify": "*",
-    "gulp-util": "*",
-    "gulp-concat": "*",
-    "gulp-watch": "*",
-    "react": "*",
+    "fuzzy": "^0.1.3",
+    "griddle-react": "^0.2.4",
+    "moment": "^2.18.1",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
     "react-async": "^2.0.1",
-    "moment": "*",
-    "tether": "*",
-    "react-onclickoutside": "*",
-    "reactify": "git://github.com/andreypopp/reactify.git#v0.16.0",
-    "reqwest": "*",
-    "griddle-react": "0.2.4",
-    "griddle-callback": "0.2.0",
     "react-bootstrap": "*",
-    "vinyl-source-stream": "*",
-    "watchify": "*"
+    "react-classset": "0.0.2",
+    "react-dom": "^15.6.1",
+    "react-onclickoutside": "^6.4.0",
+    "taffy": "^2.6.2",
+    "tether": "^1.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^3.4.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
