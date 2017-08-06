@@ -50,7 +50,7 @@ class GriddleWithCallback extends Component {
 		let newState = Object.assign({}, this.state, {
 			page: 0,
 			filter: nextProps.filter
-		};
+		});
 
 		this.updateStateWithExternalResults(newState, updatedState => {
 			// if filter is null or undefined, reset filter
@@ -177,7 +177,7 @@ class GriddleWithCallback extends Component {
 			page: 0,
 			sortColumn: sort,
 			sortAscending: sortAscending
-		};
+		});
 
 		this.updateStateWithExternalResults(newState, updatedState => {
 			this.setState(updatedState);

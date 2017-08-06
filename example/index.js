@@ -26,6 +26,5 @@ ReactDOM.render(
 
 			</div>
 		</div>
-	</div>
-	, document.getElementById('main'));
+	</div>, document.getElementById('main'));
 

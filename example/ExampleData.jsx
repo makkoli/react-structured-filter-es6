@@ -1260,7 +1260,7 @@ class ExampleData extends Component {
       {"Symbol":"ZUMZ", 	 "Name": "Zumiez Inc.", 	 "Price": 38.84, 	 "MarketCap": 1140000000, 	 "IPO":2005, 		 "Sector":"Consumer Services", 	 "Industry":"Clothing/Shoe/Accessory Stores"},
       {"Symbol":"ZNGA", 	 "Name": "Zynga Inc.", 	 "Price": 2.24, 	 "MarketCap": 2020000000, 	 "IPO":2011, 		 "Sector":"Technology", 	 "Industry":"EDP Services"}
     ]);
-  },
+  }
 
   filter(filterString, sortColumn, sortAscending, page, pageSize) {
     console.log("Filter: "+filterString);
@@ -1399,24 +1399,24 @@ class ExampleData extends Component {
       totalResults: totalResults,
       pageSize: pageSize
     };
-  },
+  }
 
   getSymbolOptions() {
     return this.db().distinct("Symbol");
-  },
+  }
 
   getSectorOptions() {
     return this.db().distinct("Sector");
-  },
+  }
 
   getIndustryOptions() {
     return this.db().distinct("Industry");
-  },
+  }
 
   render() {
     return (<div/>);
   }
-});
+};
 
 export default ExampleData;
 

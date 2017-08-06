@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Griddle from 'griddle-react';
-import GriddleWithCallback from './GriddleWithCallBack.jsx';
+import GriddleWithCallback from './GriddleWithCallback.jsx';
 import StructuredFilter from '../src/index';
 
 import ExampleData from './ExampleData.jsx';

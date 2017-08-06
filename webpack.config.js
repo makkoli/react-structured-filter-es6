@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const PATHS = {
 	example: path.join(__dirname, 'example'),
-	build: path.join(__dirname, 'build')
+	build: path.join(__dirname, 'demo')
 };
 
 module.exports = {
@@ -23,7 +23,8 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			title: 'React Structured Filter ES6 Example'
+			title: 'React Structured Filter ES6 Example',
+			template: 'example/index.html'
 		})
 	]
 };
