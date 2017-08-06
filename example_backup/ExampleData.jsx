@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { taffy } from 'taffy';
+var React = require('react');
+var Taffy = require('./taffy-min.js').taffy;
 
 
 /*******************************************************************************
@@ -8,9 +8,9 @@ import { taffy } from 'taffy';
  * You should query a server.  This is purely for demo purposes.
  ******************************************************************************/
 
-class ExampleData extends Component {
-  componentWillMount() {
-    // Create instance letiable of static data
+var ExampleData = React.createClass({
+  componentWillMount: function() {
+    // Create instance variable of static data
     this.db = Taffy([
       {"Symbol":"TFSC", 	 "Name": "1347 Capital Corp.", 	 "Price": 9.43, 	 "MarketCap": 56090000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
       {"Symbol":"PIH", 	 "Name": "1347 Property Insurance Holdings, Inc.", 	 "Price": 7.64, 	 "MarketCap": 48580000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Property-Casualty Insurers"},
@@ -187,8 +187,8 @@ class ExampleData extends Component {
       {"Symbol":"BAMM", 	 "Name": "Books-A-Million, Inc.", 	 "Price": 2.57, 	 "MarketCap": 38590000, 	 "IPO":1992, 		 "Sector":"Consumer Services", 	 "Industry":"Other Specialty Stores"},
       {"Symbol":"BRDR", 	 "Name": "Borderfree, Inc.", 	 "Price": 6.15, 	 "MarketCap": 195650000, 	 "IPO":2014, 		 "Sector":"Miscellaneous", 	 "Industry":"Business Services"},
       {"Symbol":"EPAY", 	 "Name": "Bottomline Technologies, Inc.", 	 "Price": 27.07, 	 "MarketCap": 1080000000, 	 "IPO":1999, 		 "Sector":"Technology", 	 "Industry":"Computer Software: Prepackaged Software"},
-      {"Symbol":"BLVD", 	 "Name": "Bouleletd Acquisition Corp.", 	 "Price": 9.73, 	 "MarketCap": 268180000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
-      {"Symbol":"BLVDU", 	 "Name": "Bouleletd Acquisition Corp.", 	 "Price": 9.95, 	 "MarketCap": 274250000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
+      {"Symbol":"BLVD", 	 "Name": "Boulevard Acquisition Corp.", 	 "Price": 9.73, 	 "MarketCap": 268180000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
+      {"Symbol":"BLVDU", 	 "Name": "Boulevard Acquisition Corp.", 	 "Price": 9.95, 	 "MarketCap": 274250000, 	 "IPO":2014, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
       {"Symbol":"BBRG", 	 "Name": "Bravo Brio Restaurant Group, Inc.", 	 "Price": 13.49, 	 "MarketCap": 203500000, 	 "IPO":2010, 		 "Sector":"Consumer Services", 	 "Industry":"Restaurants"},
       {"Symbol":"BBEP", 	 "Name": "BreitBurn Energy Partners, L.P.", 	 "Price": 7.85, 	 "MarketCap": 1090000000, 	 "IPO":2006, 		 "Sector":"Energy", 	 "Industry":"Oil & Gas Production"},
       {"Symbol":"BCOV", 	 "Name": "Brightcove Inc.", 	 "Price": 8.43, 	 "MarketCap": 272060000, 	 "IPO":2012, 		 "Sector":"Technology", 	 "Industry":"EDP Services"},
@@ -254,7 +254,7 @@ class ExampleData extends Component {
       {"Symbol":"CERU", 	 "Name": "Cerulean Pharma Inc.", 	 "Price": 6.62, 	 "MarketCap": 133230000, 	 "IPO":2014, 		 "Sector":"Health Care", 	 "Industry":"Major Pharmaceuticals"},
       {"Symbol":"CERS", 	 "Name": "Cerus Corporation", 	 "Price": 5.53, 	 "MarketCap": 432830000, 	 "IPO":1997, 		 "Sector":"Health Care", 	 "Industry":"Medical/Dental Instruments"},
       {"Symbol":"CYOU", 	 "Name": "Changyou.com Limited", 	 "Price": 26.25, 	 "MarketCap": 1390000000, 	 "IPO":2009, 		 "Sector":"Technology", 	 "Industry":"Computer Software: Prepackaged Software"},
-      {"Symbol":"CTHR", 	 "Name": "Charles & Colletd Ltd", 	 "Price": 1.63, 	 "MarketCap": 33180000, 	 "IPO":1997, 		 "Sector":"Consumer Durables", 	 "Industry":"Consumer Specialties"},
+      {"Symbol":"CTHR", 	 "Name": "Charles & Colvard Ltd", 	 "Price": 1.63, 	 "MarketCap": 33180000, 	 "IPO":1997, 		 "Sector":"Consumer Durables", 	 "Industry":"Consumer Specialties"},
       {"Symbol":"CACG", 	 "Name": "Chart Acquisition Corp.", 	 "Price": 9.889, 	 "MarketCap": 86880000, 	 "IPO":2013, 		 "Sector":"Finance", 	 "Industry":"Business Services"},
       {"Symbol":"GTLS", 	 "Name": "Chart Industries, Inc.", 	 "Price": 32.02, 	 "MarketCap": 976010000, 	 "IPO":2006, 		 "Sector":"Capital Goods", 	 "Industry":"Metal Fabrications"},
       {"Symbol":"CHFN", 	 "Name": "Charter Financial Corp.", 	 "Price": 11.55, 	 "MarketCap": 194770000, 	 "IPO":2010, 		 "Sector":"Finance", 	 "Industry":"Savings Institutions"},
@@ -695,7 +695,7 @@ class ExampleData extends Component {
       {"Symbol":"LMIA", 	 "Name": "LMI Aerospace, Inc.", 	 "Price": 14.33, 	 "MarketCap": 181960000, 	 "IPO":1998, 		 "Sector":"Capital Goods", 	 "Industry":"Military/Government/Technical"},
       {"Symbol":"LOGI", 	 "Name": "Logitech International S.A.", 	 "Price": 14.86, 	 "MarketCap": 2440000000, 	 "IPO":1997, 		 "Sector":"Technology", 	 "Industry":"Computer peripheral equipment"},
       {"Symbol":"LOGM", 	 "Name": "LogMein, Inc.", 	 "Price": 52.22, 	 "MarketCap": 1270000000, 	 "IPO":2009, 		 "Sector":"Technology", 	 "Industry":"Computer Software: Prepackaged Software"},
-      {"Symbol":"Elet", 	 "Name": "Lombard Medical, Inc.", 	 "Price": 5.469, 	 "MarketCap": 88520000, 	 "IPO":2014, 		 "Sector":"Health Care", 	 "Industry":"Medical/Dental Instruments"},
+      {"Symbol":"EVAR", 	 "Name": "Lombard Medical, Inc.", 	 "Price": 5.469, 	 "MarketCap": 88520000, 	 "IPO":2014, 		 "Sector":"Health Care", 	 "Industry":"Medical/Dental Instruments"},
       {"Symbol":"LOOK", 	 "Name": "LookSmart, Ltd.", 	 "Price": 0.7485, 	 "MarketCap": 4320000, 	 "IPO":1999, 		 "Sector":"Technology", 	 "Industry":"EDP Services"},
       {"Symbol":"LOXO", 	 "Name": "Loxo Oncology, Inc.", 	 "Price": 11.91, 	 "MarketCap": 198110000, 	 "IPO":2014, 		 "Sector":"Health Care", 	 "Industry":"Major Pharmaceuticals"},
       {"Symbol":"LPLA", 	 "Name": "LPL Financial Holdings Inc.", 	 "Price": 45.6, 	 "MarketCap": 4510000000, 	 "IPO":2010, 		 "Sector":"Finance", 	 "Industry":"Investment Bankers/Brokers/Service"},
@@ -1189,7 +1189,7 @@ class ExampleData extends Component {
       {"Symbol":"UTSI", 	 "Name": "UTStarcom Holdings Corp", 	 "Price": 2.76, 	 "MarketCap": 109790000, 	 "IPO":2000, 		 "Sector":"Consumer Durables", 	 "Industry":"Telecommunications Equipment"},
       {"Symbol":"VALU", 	 "Name": "Value Line, Inc.", 	 "Price": 15.0999, 	 "MarketCap": 148170000, 	 "IPO":1983, 		 "Sector":"Finance", 	 "Industry":"Investment Managers"},
       {"Symbol":"VNDA", 	 "Name": "Vanda Pharmaceuticals Inc.", 	 "Price": 12.37, 	 "MarketCap": 490480000, 	 "IPO":2006, 		 "Sector":"Health Care", 	 "Industry":"Major Pharmaceuticals"},
-      {"Symbol":"VRNS", 	 "Name": "letonis Systems, Inc.", 	 "Price": 37.34, 	 "MarketCap": 917300000, 	 "IPO":2014, 		 "Sector":"Technology", 	 "Industry":"Computer Software: Prepackaged Software"},
+      {"Symbol":"VRNS", 	 "Name": "Varonis Systems, Inc.", 	 "Price": 37.34, 	 "MarketCap": 917300000, 	 "IPO":2014, 		 "Sector":"Technology", 	 "Industry":"Computer Software: Prepackaged Software"},
       {"Symbol":"VBLT", 	 "Name": "Vascular Biogenics Ltd.", 	 "Price": 14.11, 	 "MarketCap": 280770000, 	 "IPO":2014, 		 "Sector":"Health Care", 	 "Industry":"Major Pharmaceuticals"},
       {"Symbol":"VASC", 	 "Name": "Vascular Solutions, Inc.", 	 "Price": 26.44, 	 "MarketCap": 454820000, 	 "IPO":2000, 		 "Sector":"Health Care", 	 "Industry":"Medical/Dental Instruments"},
       {"Symbol":"WOOF", 	 "Name": "VCA Inc. ", 	 "Price": 52.74, 	 "MarketCap": 4440000000, 	 "IPO":2001, 		 "Sector":"Consumer Non-Durables", 	 "Industry":"Farming/Seeds/Milling"},
@@ -1262,14 +1262,14 @@ class ExampleData extends Component {
     ]);
   },
 
-  filter(filterString, sortColumn, sortAscending, page, pageSize) {
+  filter: function(filterString, sortColumn, sortAscending, page, pageSize) {
     console.log("Filter: "+filterString);
 
     // Apply filters
-    let filteredData = this.db();
+    var filteredData = this.db();
 
     if (filterString != "") {
-      let filterArray = JSON.parse(filterString);
+      var filterArray = JSON.parse(filterString);
       for (i = 0; i < filterArray.length; i++) {
         filter = filterArray[i];
 
@@ -1372,10 +1372,10 @@ class ExampleData extends Component {
 
 
     // Get count
-    let totalResults = filteredData.count();
+    var totalResults = filteredData.count();
 
     // Set ordering
-    let ordering = "Symbol asec";
+    var ordering = "Symbol asec";
     if (sortColumn != "") {
       ordering = sortColumn;
       if (sortAscending) {
@@ -1385,7 +1385,7 @@ class ExampleData extends Component {
       }
     }
     // Get data with limits
-    let results = filteredData.order(ordering).start(pageSize*page).limit(pageSize).get();
+    var results = filteredData.order(ordering).start(pageSize*page).limit(pageSize).get();
 
     // Taffy returns my data with "___id" and "___s" added, so delete those things.
     // (There is likely a cleaner way to do this)
@@ -1401,22 +1401,21 @@ class ExampleData extends Component {
     };
   },
 
-  getSymbolOptions() {
+  getSymbolOptions: function() {
     return this.db().distinct("Symbol");
   },
 
-  getSectorOptions() {
+  getSectorOptions: function() {
     return this.db().distinct("Sector");
   },
 
-  getIndustryOptions() {
+  getIndustryOptions: function() {
     return this.db().distinct("Industry");
   },
 
-  render() {
+  render: function() {
     return (<div/>);
   }
 });
 
-export default ExampleData;
-
+module.exports = ExampleData;

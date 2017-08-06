@@ -1,278 +1,235 @@
-var React = require('react');
-var _ = require('underscore');
-var Griddle = require('griddle-react');
+import React, { Component } from 'react';
+import _ from 'underscore';
+import Griddle from 'griddle-react';
 
-var Loading = React.createClass({
-  getDefaultProps: function(){
-    return {
-      loadingText: "Loading"
-    }
-  },
-  render: function(){
-    return <div className="loading">{this.props.loadingText}</div>;
-  }
-});
+const Loading = (props) => {
+    return (
+	<div className="loading">
+		{this.props.loadingText || "Loading"}
+	</div>
+    );
+}
 
-var NextArrow = React.createElement("i", {className: "glyphicon glyphicon-chevron-right"}, null);
-var PreviousArrow = React.createElement("i", {className: "glyphicon glyphicon-chevron-left"}, null);
-var SettingsIconComponent = React.createElement("i", {className: "glyphicon glyphicon-cog"}, null);
-
-var GriddleWithCallback = React.createClass({
-  /**
-   *
-   */
-  getDefaultProps: function(){
-    return {
-      getExternalResults: null,
-      resultsPerPage: 10,
-      loadingComponent: null,
-      enableInfiniteScroll: false,
-      filter: ""
-    }
-  },
+const NextArrow = React.createElement('i', {className: "glyphicon glyphicon-chevron-right"}, null);
+const PreviousArrow = React.createElement('i', {className: "glyphicon glyphicon-chevron-left"}, null);
+const SettingsIconComponent = React.createElement('i', {className: "glyphicon glyphicon-cog"}, null);
 
 
-  /**
-   *
-   */
-  getInitialState: function(){
-    var initial = { "results": [],
-        "page": 0,
-        "maxPage": 0,
-        "sortColumn":null,
-        "sortAscending":true
-    };
+class GriddleWithCallback extends Component {
+	
+	constructor(props) {
+		super(props);
 
-    // If we need to get external results, grab the results.
-    initial.isLoading = true; // Initialize to 'loading'
+		this.state = {
+			results: [],
+			page: 0,
+			maxPage: 0,
+			sortColumn: null,
+			sortAscending: true,
+			initial: true	// Initialize to loading
+		};
+	}
+		
+	componentDidMount() {
+		let newState = Object.assign({}, this.state, {
+			pageSize: this.props.resultsPerPage
+		});
 
-    return initial;
-  },
+		if (!this.hasExternalResults()) {
+			console.error("When ussing GriddleWithCallback, a getExternalResults callback must be supplied.");
+			return;
+		}
 
+		// Update state with external results mounting
+		this.updateStateWithExternalResults(newState, updatedState => {
+			this.setState(updatedState);
+		});
+	}
 
-  /**
-   * Called when component mounts
-   */
-  componentDidMount: function(){
-    var state = this.state;
-    state.pageSize = this.props.resultsPerPage;
+	componentWillReceiveProps(nextProps) {
+		let newState = Object.assign({}, this.state, {
+			page: 0,
+			filter: nextProps.filter
+		};
 
-    var that = this;
+		this.updateStateWithExternalResults(newState, updatedState => {
+			// if filter is null or undefined, reset filter
+			if (_.isUndefined(nextProps.filter) ||
+				_.isNull(nextProps.filter) ||
+				_.isEmpty(nextProps.filter)) {
+					updatedState.filter = nextProps.filter;
+					updatedState.filteredResults = null;
+				}
 
-    if (!this.hasExternalResults()) {
-      console.error("When using GriddleWithCallback, a getExternalResults callback must be supplied.");
-      return;
-    }
+			// Set the state
+			this.setState(updatedState);
+		});
+	}
 
-    // Update the state with external results when mounting
-    state = this.updateStateWithExternalResults(state, function(updatedState) {
-      that.setState(updatedState);
-    });
-  },
+	// Utility function
+	setDefault(original, value) {
+		return typeof original === 'undefined' ? value : original;
+	}
 
+	setPage(index, pageSize) {
+		// this should interact with the data source to get the page at the given index
+		let newState = Object.assign({}, this.state, {
+			page: index,
+			pageSize: this.setDefault(pageSize, this.state.pageSize)
+		});
 
-  /**
-   *
-   */
-  componentWillReceiveProps: function(nextProps) {
-    var state = this.state,
-    that = this;
+		this.updateStateWithExternalResults(newState, updatedState => {
+			this.setState(updatedState);
+		})
+	}
 
-    var state = {
-      page: 0,
-      filter: nextProps.filter
-    }
+	getExternalResults(state, callback) {
+		let filter, sortColumn, sortAscending, page, pageSize;
 
-    this.updateStateWithExternalResults(state, function(updatedState) {
-      //if filter is null or undefined reset the filter.
-      if (_.isUndefined(nextProps.filter) || _.isNull(nextProps.filter) || _.isEmpty(nextProps.filter)){
-        updatedState.filter = nextProps.filter;
-        updatedState.filteredResults = null;
-      }
+		// Fill the search properties
+		if (state !== undefined && state.filter !== undefined) {
+			filter = state.filter;
+		} else {
+			filter = this.state.filter;
+		}
 
-      // Set the state.
-      that.setState(updatedState);
-    });
-  },
+		if (state !== undefined && state.sortColumn !== undefined) {
+			sortColumn = state.sortColumn;
+		} else {
+			sortColumn = this.state.sortColumn;
+		}
 
+		sortColumn = _.isEmpty(sortColumn) ? this.props.initialSort : sortColumn;
 
-  /**
-   * Utility function
-   */
-  setDefault: function(original, value){
-    return typeof original === 'undefined' ? value : original;
-  },
+		if (state !== undefined && state.sortAscending !== undefined) {
+			sortAscending = state.sortAscending;
+		} else {
+			sortAscending = this.state.sortAscending;
+		}
 
+		if (state !== undefined && state.page !== undefined) {
+			page = state.page;
+		} else {
+			page = this.state.page;
+		}
 
-  /**
-   *
-   */
-  setPage: function(index, pageSize){
-    //This should interact with the data source to get the page at the given index
-    var that = this;
-    var state = {
-      page: index,
-      pageSize: this.setDefault(pageSize, this.state.pageSize)
-    };
+		if (state !== undefined && state.pageSize !== undefined) {
+			pageSize = state.pageSize;
+		} else {
+			pageSize = this.state.pageSize;
+		}
 
-    this.updateStateWithExternalResults(state, function(updatedState) {
-      that.setState(updatedState);
-    });
-  },
+		// Obtain the results
+		this.props.getExternalResults(
+				filter,
+				sortColumn,
+				sortAscending,
+				page,
+				pageSize,
+				callback);
+	}
 
-  /**
-   *
-   */
-  getExternalResults: function(state, callback) {
-    var filter,
-    sortColumn,
-    sortAscending,
-    page,
-    pageSize;
+	updateStateWithExternalResults(state, callback) {
+		// Update table to indicate that it's loading
+		this.setState({
+			isLoading: true
+		});
+		// Grab the results
+		this.getExternalResults(state, externalResults => {
+			// Full the state result properties
+			if (this.props.enableInfiniteScroll && this.state.results) {
+				state.results = this.state.results.concat(externalResults.results);
+			} else {
+				state.results = externalResults.results;
+			}
 
-    // Fill the search properties.
-    if (state !== undefined && state.filter !== undefined) {
-      filter = state.filter;
-    } else {
-      filter = this.state.filter;
-    }
+			state.totalResults = externalResults.totalResults;
+			state.maxPage = this.getMaxPage(
+				externalResults.pageSize,
+				externalResults.totalResults
+			);
+			state.isLoading = false;
 
-    if (state !== undefined && state.sortColumn !== undefined) {
-      sortColumn = state.sortColumn;
-    } else {
-      sortColumn = this.state.sortColumn;
-    }
+			// If current page is larger than max page, reset page
+			if (state.page >= state.maxPage) {
+				state.page = state.maxPage - 1;
+			}
 
-    sortColumn = _.isEmpty(sortColumn) ? this.props.initialSort : sortColumn;
+			callback(state);
+		});
+	}
 
-    if (state !== undefined && state.sortAscending !== undefined) {
-      sortAscending = state.sortAscending;
-    } else {
-      sortAscending = this.state.sortAscending;
-    }
+	getMaxPage(pageSize, totalResults) {
+		if (!totalResults) {
+			totalResults = this.state.totalResults;
+		}
 
-    if (state !== undefined && state.page !== undefined) {
-      page = state.page;
-    } else {
-      page = this.state.page;
-    }
+		return Math.ceil(totalResults / pageSize);
+	}
 
-    if (state !== undefined && state.pageSize !== undefined) {
-      pageSize = state.pageSize;
-    } else {
-      pageSize = this.state.pageSize;
-    }
+	hasExternalResults() {
+		return typeof(this.props.getExternalResults) === 'function';
+	}
 
-    // Obtain the results
-    this.props.getExternalResults(filter, sortColumn, sortAscending, page, pageSize, callback);
-  },
+	changeSort(sort, sortAscending) {
+		// this should change the sort for the given column
+		let newState = Object.assign({}, this.state, {
+			page: 0,
+			sortColumn: sort,
+			sortAscending: sortAscending
+		};
 
+		this.updateStateWithExternalResults(newState, updatedState => {
+			this.setState(updatedState);
+		})
+	}
 
-  /**
-   *
-   */
-  updateStateWithExternalResults: function(state, callback) {
-    var that = this;
+	setFilter(filter) {
+		// no-op
+	}
 
-    // Update the table to indicate that it's loading.
-    this.setState({ isLoading: true });
-    // Grab the results.
-    this.getExternalResults(state, function(externalResults) {
-      // Fill the state result properties
-      if (that.props.enableInfiniteScroll && that.state.results) {
-        state.results = that.state.results.concat(externalResults.results);
-      } else {
-        state.results = externalResults.results;
-      }
+	setPageSize(size) {
+		this.setPage(0, size);
+	}
 
-      state.totalResults = externalResults.totalResults;
-      state.maxPage = that.getMaxPage(externalResults.pageSize, externalResults.totalResults);
-      state.isLoading = false;
+	render() {
+		return (
+			<Griddle
+				{...this.props}
+				useExternal={true}
+				externalSetPage={this.setPage}
+				externalChangeSort={this.changeSort}
+				externalSetFilter={this.setFilter}
+				externalSetPageSize={this.setPageSize}
+				externalMaxPage={this.state.maxPage}
+				externalCurrentPage={this.state.page}
+				results={this.state.results}
+				tableClassName="table"
+				resultsPerPage={this.state.pageSize}
+				externalSortColumn={this.state.sortColumn}
+				externalSortAscending={this.state.sortAscending}
+				externalLoadingComponent={this.props.loadingComponent}
+				externalIsLoading={this.state.isLoading}
+				loadingComponent={Loading}
+				nextIconComponent={NextArrow}
+				previousIconComponent={PreviousArrow}
+				settingsIconComponent={SettingsIconComponent}
+				settingsText="Settings "
+				showSettings={true}
+				useGriddleStyles={false}
+				enableSort={true}
+				showFilter={false}
+			/>
+		);
+	}
+}
 
-      // If the current page is larger than the max page, reset the page.
-      if (state.page >= state.maxPage) {
-        state.page = state.maxPage - 1;
-      }
+GriddleWithCallback.defaultProps = {
+    getExternalResults: null,
+    resultsPerPage: 10,
+    loadingComponent: null,
+    enableInfiniteScroll: false,
+    filter: ''
+};
 
-      callback(state);
-    });
-  },
-
-
-  /**
-   *
-   */
-  getMaxPage: function(pageSize, totalResults){
-    if (!totalResults) {
-      totalResults = this.state.totalResults;
-    }
-
-    var maxPage = Math.ceil(totalResults / pageSize);
-    return maxPage;
-  },
-
-
-  /**
-   *
-   */
-  hasExternalResults: function() {
-    return typeof(this.props.getExternalResults) === 'function';
-  },
-
-
-  /**
-   *
-   */
-  changeSort: function(sort, sortAscending){
-    var that = this;
-
-    // This should change the sort for the given column
-    var state = {
-      page:0,
-      sortColumn: sort,
-      sortAscending: sortAscending
-    };
-
-    this.updateStateWithExternalResults(state, function(updatedState) {
-      that.setState(updatedState);
-    });
-  },
-
-  setFilter: function(filter) {
-    // no-op
-  },
-
-
-  /**
-   *
-   */
-  setPageSize: function(size){
-    this.setPage(0, size);
-  },
-
-
-  /**
-   *
-   */
-  render: function(){
-    return <Griddle {...this.props} useExternal={true} externalSetPage={this.setPage}
-      externalChangeSort={this.changeSort} externalSetFilter={this.setFilter}
-      externalSetPageSize={this.setPageSize} externalMaxPage={this.state.maxPage}
-      externalCurrentPage={this.state.page} results={this.state.results} tableClassName="table" resultsPerPage={this.state.pageSize}
-      externalSortColumn={this.state.sortColumn} externalSortAscending={this.state.sortAscending}
-      externalLoadingComponent={this.props.loadingComponent} externalIsLoading={this.state.isLoading}
-
-      loadingComponent={Loading}
-      nextIconComponent={NextArrow}
-      previousIconComponent={PreviousArrow}
-      settingsIconComponent={SettingsIconComponent}
-      settingsText="Settings "
-      showSettings={true}
-      useGriddleStyles={false}
-      enableSort={true}
-      showFilter={false}
-      />
-  }
-});
-
-module.exports = GriddleWithCallback;
+export default GriddleWithCallback;

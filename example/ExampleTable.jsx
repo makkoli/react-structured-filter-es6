@@ -1,82 +1,91 @@
-var React = require('react');
-var Griddle = require('griddle-react');
-var GriddleWithCallback = require('./GriddleWithCallback.jsx');
-var StructuredFilter = require('../src/index.js');
+import React, { Component } from 'react';
+import Griddle from 'griddle-react';
+import GriddleWithCallback from './GriddleWithCallBack.jsx';
+import StructuredFilter from '../src/index';
 
-var ExampleData = require('./ExampleData.jsx');
+import ExampleData from './ExampleData.jsx';
 
-var ExampleTable = React.createClass({
-  getInitialState: function() {
-    return {
-      filter: "",
-    }
-  },
+class ExampleTable extends Component {
 
+    constructor(props) {
+	super(props);
 
-  getJsonData: function(filterString, sortColumn, sortAscending, page, pageSize, callback) {
-    thisComponent = this;
-
-    if (filterString==undefined) {
-      filterString = "";
-    }
-    if (sortColumn==undefined) {
-      sortColumn = "";
+	this.state = {
+	    filter: ''
+	};
     }
 
-    // Normally you would make a Reqwest here to the server
-    var results = this.refs.ExampleData.filter(filterString, sortColumn, sortAscending, page, pageSize);
-    callback(results);
-  },
+    getJsonData(filterString, sortColumn, sortAscending, page, pageSize, callback) {
+	thisComponent = this;
+
+	if (filterString == undefined) {
+	    filterString = '';
+	}
+	if (sortColumn == undefined) {
+	    sortColumn = '';
+	}
+
+	// Normally you would make a request to server here
+	let results = this.refs.ExampleData.filter(
+		filterString,
+		sortColumn,
+		sortAscending,
+		page,
+		pageSize);
+	callback(results);
+    }
+
+    updateFilter(filter) {
+	// Set our filter to json data of the current filter tokens
+	this.setState({
+	    filter: JSON.stringify(filter)
+	});
+    }
+
+    getSymbolOptions() {
+	return this.refs.ExampleData.getSymbolOptions();
+    }
+
+    getSectorOptions() {
+	return this.refs.ExampleData.getSectorOptions();
+    }
+
+    getIndustryOptions() {
+	return this.refs.ExampleData.getIndustryOptions();
+    }
+
+    render() {
+	return (
+		<div>
+			<StructuredFilter
+				placeholder=""
+				options={[
+					{category:"Symbol", type:"textoptions", options:this.getSymbolOptions},
+					{category:"Name",type:"text"},
+					{category:"Price",type:"number"},
+					{category:"MarketCap",type:"number"},
+					{category:"IPO", type:"date"},
+					{category:"Sector", type:"textoptions", options:this.getSectorOptions},
+					{category:"Industry", type:"textoptions", options:this.getIndustryOptions}
+				]}
+				customClasses={{
+					input: "filter-tokenizer-text-input",
+					results: "filter-tokenizer-list__container",
+					listItem: "filter-tokenizer-list__item"
+				}}
+				onTokenAdd={this.updateFilter}
+				onTokenRemove={this.updateFilter}
+			/>
+			<GriddleWithCallback
+				getExternalResults={this.getJsonData}
+				filter={this.state.filter}
+				resultsPerPage={10}
+			/>
+			<ExampleData ref={ExampleData => this.ExampleData = ExampleData} />
+		</div>
+	);
+    }
+}
 
 
-  updateFilter: function(filter){
-    // Set our filter to json data of the current filter tokens
-    this.setState({filter: JSON.stringify(filter)});
-  },
-
-
-  getSymbolOptions: function() {
-    return this.refs.ExampleData.getSymbolOptions();
-  },
-
-  getSectorOptions: function() {
-    return this.refs.ExampleData.getSectorOptions();
-  },
-
-  getIndustryOptions: function() {
-    return this.refs.ExampleData.getIndustryOptions();
-  },
-
-
-  render: function(){
-    return (
-      <div>
-        <StructuredFilter
-          placeholder=""
-          options={[
-            {category:"Symbol", type:"textoptions", options:this.getSymbolOptions},
-            {category:"Name",type:"text"},
-            {category:"Price",type:"number"},
-            {category:"MarketCap",type:"number"},
-            {category:"IPO", type:"date"},
-            {category:"Sector", type:"textoptions", options:this.getSectorOptions},
-            {category:"Industry", type:"textoptions", options:this.getIndustryOptions}
-            ]}
-          customClasses={{
-            input: "filter-tokenizer-text-input",
-            results: "filter-tokenizer-list__container",
-            listItem: "filter-tokenizer-list__item"
-          }}
-          onTokenAdd={this.updateFilter}
-          onTokenRemove={this.updateFilter}
-        />
-        <GriddleWithCallback
-          getExternalResults={this.getJsonData} filter={this.state.filter}
-          resultsPerPage={10}
-        />
-        <ExampleData ref="ExampleData" />
-      </div>
-    )
-  }
-});
-module.exports = ExampleTable;
+export default ExampleTable;
