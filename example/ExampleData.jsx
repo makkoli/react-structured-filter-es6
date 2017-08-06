@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { taffy } from 'taffy';
+import Taffy from 'taffy';
 
 
 /*******************************************************************************
@@ -1270,7 +1270,7 @@ class ExampleData extends Component {
 
     if (filterString != "") {
       let filterArray = JSON.parse(filterString);
-      for (i = 0; i < filterArray.length; i++) {
+      for (let i = 0; i < filterArray.length; i++) {
         filter = filterArray[i];
 
         // Filter Symbol
@@ -1389,9 +1389,9 @@ class ExampleData extends Component {
 
     // Taffy returns my data with "___id" and "___s" added, so delete those things.
     // (There is likely a cleaner way to do this)
-    for (i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i++) {
       delete results[i]["___id"];
-      delete results[i]["___s"]
+      delete results[i]["___s"];
     }
 
     return {

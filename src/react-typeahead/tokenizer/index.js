@@ -58,22 +58,33 @@ class TypeaheadTokenizer extends Component {
 	// 	operator options if a column category 
 	// 		has been selected
 	_getOptionsForTypeahead() {
-		let categoryType;
+		if (this.state.category == '') {
+			let categories = this.props.options.map(option => {
+				return option.category;
+			});
 
-		if (this.state.category === '') {
-			return this.props.options.map(option =>
-					option.columnName)
-		} else if (this.state.operator === '') {
-			categoryType = this._getCategoryType();
-		}
+			return categories;
 
-		if (categoryType === 'text') {
-			return ['=', '!', 'contains', 'like', 'startsWith', 'endsWith'];
-		} else if (categoryType == 'textoptions') {
-			return ['=', '!'];
-		} else if (categoryType === 'number' ||
-				categoryType === 'date') {
-			return ['=', '!', '<', '<=', '>', '>='];
+		} else if (this.state.operator == '') {
+			let categoryType = this._getCategoryType();
+
+			if (categoryType == 'text') {
+				return ['==', '!=', 'contains', '!contains'];
+			} else if (categoryType == 'textOptions') {
+				return ['==', '!='];
+			} else if (categoryType == 'number' ||
+					categoryType == 'date') {
+						return ['==', '!=', '<', '<=', '>', '>='];
+			} else {
+				console.log("WARNING: Unknown category type in tokenizer");
+			}
+		} else {
+			let options = this._getCategoryOptions();
+			if (options == null) {
+				return [];
+			} else {
+				return options();
+			}
 		}
 
 		return this.props.options;
@@ -111,6 +122,14 @@ class TypeaheadTokenizer extends Component {
 		this.props.options.forEach(option => {
 			if (option.category === this.state.category) {
 				return option.type;
+			}
+		})
+	}
+
+	_getCategoryOptions() {
+		this.props.options.forEach(option => {
+			if (option.category == this.state.category) {
+				return option.options;
 			}
 		})
 	}
@@ -210,17 +229,35 @@ class TypeaheadTokenizer extends Component {
 
 
 	render() {
+		let classes = {};
+		classes[this.props.customClasses.typeahead] = !!this.props.customClasses.typeahead;
+		let classList = classSet(classes);
+
 		return (
-			<Typeahead 
-				ref={typeahead => this.typeahead = typeahead}
-				options={this._getOptionsForTypeahead()}
-				header={this._getHeader()}
-				datatype={this._getInputType()}
-				onOptionSelected={this._addTokenForValue}
-				onKeyDown={this._onKeyDown}
-				placeholder={this.props.placeholder}
-				defaultValue={this.props.defaultValue}
-			/>
+			<div className="filter-tokenizer">
+				<span className="input-group-addon">
+					<i className="fa fa-search"></i>
+				</span>
+				<div className="token-collection">
+					{this._renderTokens()}
+					<div className="filter-input-group">
+						<div className="filter-category">{this.state.category}</div>
+						<div className="filter-operator">{this.state.operator}</div>
+						<Typeahead 
+							ref={typeahead => this.typeahead = typeahead}
+							className={classList}
+							customClasses={this.props.customClasses}
+							options={this._getOptionsForTypeahead()}
+							header={this._getHeader()}
+							datatype={this._getInputType()}
+							onOptionSelected={this._addTokenForValue}
+							onKeyDown={this._onKeyDown}
+							placeholder={this.props.placeholder}
+							defaultValue={this.props.defaultValue}
+						/>
+					</div>
+				</div>
+			</div>
 		);
 	}
 }
@@ -231,8 +268,8 @@ TypeaheadTokenizer.defaultProps = {
 	customClasses: {},
 	defaultValue: '',
 	placeholder: '',
-	onTokenAdd() {},
-	onTokenRemove() {}
+	onTokenAdd: () => {},
+	onTokenRemove: () => {}
 };
 
 

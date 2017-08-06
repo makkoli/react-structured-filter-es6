@@ -7,6 +7,7 @@ const PATHS = {
 };
 
 module.exports = {
+	devtool: 'source-map',
 	entry: PATHS.example,
 	output: {
 		path: PATHS.build,

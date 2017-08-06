@@ -7,84 +7,83 @@ import ExampleData from './ExampleData.jsx';
 
 class ExampleTable extends Component {
 
-    constructor(props) {
-	super(props);
+	constructor(props) {
+		super(props);
 
-	this.state = {
-	    filter: ''
-	};
-    }
+		this.state = {
+		    filter: ''
+		};
+    	}
 
-    getJsonData(filterString, sortColumn, sortAscending, page, pageSize, callback) {
-	thisComponent = this;
+	getJsonData(filterString, sortColumn, sortAscending, page, pageSize, callback) {
 
-	if (filterString == undefined) {
-	    filterString = '';
+		if (filterString == undefined) {
+			filterString = '';
+		}
+		if (sortColumn == undefined) {
+			sortColumn = '';
+		}
+
+		// Normally you would make a request to server here
+		let results = this.ExampleData.filter(
+			filterString,
+			sortColumn,
+			sortAscending,
+			page,
+			pageSize);
+		callback(results);
 	}
-	if (sortColumn == undefined) {
-	    sortColumn = '';
+
+	updateFilter(filter) {
+		// Set our filter to json data of the current filter tokens
+		this.setState({
+		    filter: JSON.stringify(filter)
+		});
 	}
 
-	// Normally you would make a request to server here
-	let results = this.refs.ExampleData.filter(
-		filterString,
-		sortColumn,
-		sortAscending,
-		page,
-		pageSize);
-	callback(results);
-    }
+	getSymbolOptions() {
+		return this.ExampleData.getSymbolOptions();
+	}
 
-    updateFilter(filter) {
-	// Set our filter to json data of the current filter tokens
-	this.setState({
-	    filter: JSON.stringify(filter)
-	});
-    }
+	getSectorOptions() {
+		return this.ExampleData.getSectorOptions();
+	}
 
-    getSymbolOptions() {
-	return this.refs.ExampleData.getSymbolOptions();
-    }
+	getIndustryOptions() {
+		return this.ExampleData.getIndustryOptions();
+	}
 
-    getSectorOptions() {
-	return this.refs.ExampleData.getSectorOptions();
-    }
-
-    getIndustryOptions() {
-	return this.refs.ExampleData.getIndustryOptions();
-    }
-
-    render() {
-	return (
-		<div>
-			<StructuredFilter
-				placeholder=""
-				options={[
-					{category:"Symbol", type:"textoptions", options:this.getSymbolOptions},
-					{category:"Name",type:"text"},
-					{category:"Price",type:"number"},
-					{category:"MarketCap",type:"number"},
-					{category:"IPO", type:"date"},
-					{category:"Sector", type:"textoptions", options:this.getSectorOptions},
-					{category:"Industry", type:"textoptions", options:this.getIndustryOptions}
-				]}
-				customClasses={{
-					input: "filter-tokenizer-text-input",
-					results: "filter-tokenizer-list__container",
-					listItem: "filter-tokenizer-list__item"
-				}}
-				onTokenAdd={this.updateFilter}
-				onTokenRemove={this.updateFilter}
-			/>
-			<GriddleWithCallback
-				getExternalResults={this.getJsonData}
-				filter={this.state.filter}
-				resultsPerPage={10}
-			/>
-			<ExampleData ref={ExampleData => this.ExampleData = ExampleData} />
-		</div>
-	);
-    }
+	render() {
+		return (
+			<div>
+				<StructuredFilter
+					placeholder=""
+					options={[
+						{category:"Symbol", type:"textoptions", options:this.getSymbolOptions},
+						{category:"Name",type:"text"},
+						{category:"Price",type:"number"},
+						{category:"MarketCap",type:"number"},
+						{category:"IPO", type:"date"},
+						{category:"Sector", type:"textoptions", options:this.getSectorOptions},
+						{category:"Industry", type:"textoptions", options:this.getIndustryOptions}
+					]}
+					customClasses={{
+						input: "filter-tokenizer-text-input",
+						results: "filter-tokenizer-list__container",
+						listItem: "filter-tokenizer-list__item"
+					}}
+					onTokenAdd={this.updateFilter}
+					onTokenRemove={this.updateFilter}
+				/>
+				<ExampleData ref={ExampleData => this.ExampleData = ExampleData} />
+				<GriddleWithCallback
+					getExternalResults={this.getJsonData.bind(this)}
+					filter={this.state.filter}
+					resultsPerPage={10}
+				/>
+			</div>
+		);
+    	}
 }
 
 

@@ -17,6 +17,7 @@ class Typeahead extends Component {
 	
 	constructor(props) {
 		super(props);
+		console.log('typeahead props', props);
 
 		this.state = {
 			// set of all options
@@ -247,7 +248,7 @@ class Typeahead extends Component {
 		let classes = {
 			typeahead: true
 		};
-		classes[this.prop.className] = !!this.props.className;
+		classes[this.props.className] = !!this.props.className;
 		let classList = classSet(inputClasses);
 
 		// Render date picker if data type is 'date'

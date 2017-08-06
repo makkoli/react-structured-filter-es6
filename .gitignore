@@ -1,2 +1,4 @@
 node_modules
 /example/demo/main.js
+/demo
+package-lock.json
