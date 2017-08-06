@@ -1,105 +1,112 @@
-/** @jsx React.DOM */
-var React = require('react/addons');
+import React, { Component } from 'react';
 
-var Day = require('./day');
-var DateUtil = require('./util/date');
-var moment = require('moment');
+import Day from './day';
+import DateUtil from './util/date';
+import moment from 'moment';
+import onClickOutside from 'react-onclickoutside';
 
-var Calendar = React.createClass({
-  mixins: [require('react-onclickoutside')],
+class Calendar extends Component {
+	
+	constructor(props) {
+		super(props);
 
-  handleClickOutside: function() {
-    this.props.hideCalendar();
-  },
+		this.state = {
+			date: new DateUtil(this.props.selected).safeClone(moment())
+		}
+	}
 
-  getInitialState: function() {
-    return {
-      date: new DateUtil(this.props.selected).safeClone(moment())
-    };
-  },
+	// hide calendar when focus is lost on calendar
+	handleClickOutside() {
+		this.props.hideCalendar();
+	}
 
-  increaseMonth: function() {
-    this.setState({
-      date: this.state.date.addMonth()
-    });
-  },
+	increaseMonth() {
+		this.setState({
+			date: this.state.date.addMonth()
+		});
+	}
 
-  decreaseMonth: function() {
-    this.setState({
-      date: this.state.date.subtractMonth()
-    });
-  },
+	decreaseMonth() {
+		this.setState({
+			date: this.state.substractMonth()
+		});
+	}
 
-  weeks: function() {
-    return this.state.date.mapWeeksInMonth(this.renderWeek);
-  },
+	weeks() {
+		return this.state.date.mapWeeksInMonth(this.renderWeek);
+	}
 
-  handleDayClick: function(day) {
-    this.props.onSelect(day);
-  },
+	handleDayClick(day) {
+		this.props.onSelect(day);
+	}
 
-  renderWeek: function(weekStart, key) {
-    if(! weekStart.weekInMonth(this.state.date)) {
-      return;
-    }
+	renderWeek(weekStart, key) {
+		if (!weekStart.weekInMonth(this.state.date)) {
+			return;
+		}
 
-    return (
-      <div key={key}>
-        {this.days(weekStart)}
-      </div>
-    );
-  },
+		return (
+			<div key={key}>
+				{this.days(weekStart)}
+			</div>
+		);
+	}
 
-  renderDay: function(day, key) {
-    var minDate = new DateUtil(this.props.minDate).safeClone(),
-        maxDate = new DateUtil(this.props.maxDate).safeClone(),
-        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+	renderDay(day, key) {
+		let minDate = new DateUtil(this.props.minDate).safeClone(),
+		    maxDate = new DateUtil(this.props.maxDate).safeClone(),
+		    disabled = day.isBefore(minDate) || day.isAfter(maxDate);
 
-    return (
-      <Day
-        key={key}
-        day={day}
-        date={this.state.date}
-        onClick={this.handleDayClick.bind(this, day)}
-        selected={new DateUtil(this.props.selected)}
-        disabled={disabled} />
-    );
-  },
+		return (
+			<Day
+				key={key}
+				day={day}
+				date={this.state.date}
+				onClick={this.handleDayClick.bind(this, day)}
+				selected={new DateUtil(this.props.selected)}
+				disabled={disabled}
+			/>
+		);
+	}
 
-  days: function(weekStart) {
-    return weekStart.mapDaysInWeek(this.renderDay);
-  },
+	days(weekStart) {
+		return weekStart.mapDaysInWeek(this.renderDay);
+	}
 
-  render: function() {
-    return (
-      <div className="datepicker">
-        <div className="datepicker__triangle"></div>
-        <div className="datepicker__header">
-          <a className="datepicker__navigation datepicker__navigation--previous"
-              onClick={this.decreaseMonth}>
-          </a>
-          <span className="datepicker__current-month">
-            {this.state.date.format("MMMM YYYY")}
-          </span>
-          <a className="datepicker__navigation datepicker__navigation--next"
-              onClick={this.increaseMonth}>
-          </a>
-          <div>
-            <div className="datepicker__day">Mo</div>
-            <div className="datepicker__day">Tu</div>
-            <div className="datepicker__day">We</div>
-            <div className="datepicker__day">Th</div>
-            <div className="datepicker__day">Fr</div>
-            <div className="datepicker__day">Sa</div>
-            <div className="datepicker__day">Su</div>
-          </div>
-        </div>
-        <div className="datepicker__month">
-          {this.weeks()}
-        </div>
-      </div>
-    );
-  }
-});
+	render() {
+		return (
+			<div className="datepicker">
+				<div className="datepicker__triangle"></div>
+				<div className="datepicker__header">
+					<a 
+						className="datepicker__navigation datepicker__navigation--previous"
+						onClick={this.decreaseMonth}
+					>
+					</a>
+					<span className="datepicker__current-month">
+						{this.state.date.format('MMMM YYYY')}
+					</span>
+					<a
+						className="datepicker__navigation datepicker__navigation--next"
+						onClick={this.increaseMonth}
+					>
+					</a>
+					<div>
+						<div className="datepicker__day">Mo</div>
+						<div className="datepicker__day">Tu</div>
+						<div className="datepicker__day">We</div>
+						<div className="datepicker__day">Th</div>
+						<div className="datepicker__day">Fr</div>
+						<div className="datepicker__day">Sa</div>
+						<div className="datepicker__day">Su</div>
+					</div>
+				</div>
+				<div className="datepicker__month">
+					{this.weeks()}
+				</div>
+			</div>
+		);
+	}
+}
 
-module.exports = Calendar;
+export default onClickOutside(Calendar);

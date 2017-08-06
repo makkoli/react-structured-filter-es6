@@ -1,7 +1,7 @@
 var React = require('react');
 var Griddle = require('griddle-react');
 var GriddleWithCallback = require('./GriddleWithCallback.jsx');
-var StructuredFilter = require('../src/main.jsx');
+var StructuredFilter = require('../src/index.js');
 
 var ExampleData = require('./ExampleData.jsx');
 

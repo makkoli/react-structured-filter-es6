@@ -1,85 +1,91 @@
-/** @jsx React.DOM */
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-var React = require('react/addons');
+import Popover from './popover';
+import DateUtil from './util/date';
+import Calendar from './calendar';
+import DateInput from './date_input';
 
-var Popover   = require('./popover');
-var DateUtil  = require('./util/date');
-var Calendar  = require('./calendar');
-var DateInput = require('./date_input');
+class DatePicker extends Component {
 
-var DatePicker = React.createClass({
-  propTypes: {
-    onChange: React.PropTypes.func,
-    onKeyDown: React.PropTypes.func
-  },
+	constructor(props) {
+		super(props);
 
-  getInitialState: function() {
-    return {
-      focus: true
-    };
-  },
+		this.state = {
+			focus: true
+		};
+	}
 
-  handleFocus: function() {
-    this.setState({
-      focus: true
-    });
-  },
+	handleFocus() {
+		this.setState({
+			focus: true
+		});
+	}
 
-  hideCalendar: function() {
-      this.setState({
-        focus: false
-      });
-  },
+	hideCalendar() {
+		this.setState({
+			focus: false
+		});
+	}
 
-  handleSelect: function(date) {
-    this.hideCalendar();
-    this.setSelected(date);
-  },
+	handleSelect(date) {
+		this.hideCalendar();
+		this.setSelected(date);
+	}
 
-  setSelected: function(date) {
-    this.props.onChange(date.moment());
-  },
+	setSelected(date) {
+		this.props.onChange(date.moment());
+	}
 
-  onInputClick: function() {
-    this.setState({
-      focus: true
-    });
-  },
+	onInputClick() {
+		this.setState({
+			focus: true
+		});
+	}
 
-  calendar: function() {
-    if (this.state.focus) {
-      return (
-        <Popover>
-          <Calendar
-            selected={this.props.selected}
-            onSelect={this.handleSelect}
-            hideCalendar={this.hideCalendar}
-            minDate={this.props.minDate}
-            maxDate={this.props.maxDate} />
-        </Popover>
-      );
-    }
-  },
+	calendar() {
+		if (this.state.focus) {
+			return (
+				<Popover>
+					<Calendar
+						selected={this.props.selected}
+						onSelect={this.handleSelect}
+						hideCalendar={this.hideCalendar}
+						minDate={this.props.minDate}
+						maxDate={this.props.maxDate}
+					/>
+				</Popover>
+			);
+		}
+	}
 
-  render: function() {
-    return (
-      <div>
-        <DateInput
-          ref="dateinput"
-          date={this.props.selected}
-          dateFormat={this.props.dateFormat}
-          focus={this.state.focus}
-          onFocus={this.handleFocus}
-          onKeyDown={this.props.onKeyDown}
-          handleClick={this.onInputClick}
-          handleEnter={this.hideCalendar}
-          setSelected={this.setSelected}
-          hideCalendar={this.hideCalendar}
-          placeholderText={this.props.placeholderText} />
-        {this.calendar()}
-      </div>
-    );
-  }
-});
+	render() {
+		return (
+			<div>
+				<DateInput
+					ref={dateinput => this.dateinput = dateinput}
+					date={this.props.selected}
+					dateFormat={this.props.dateFormat}
+					focus={this.state.focus}
+					onFocus={this.handleFocus}
+					onKeyDown={this.props.onKeyDown}
+					handleClick={this.onInputClick}
+					handleEnter={this.hideCalendar}
+					setSelected={this.setSelected}
+					hideCalendar={this.hideCalendar}
+					placeholderText={this.props.placeholderText}
+				/>
+				{this.calendar()}
+			</div>
+		);
+	}
+}
 
-module.exports = DatePicker;
+
+DatePicker.propTypes = {
+	onChange: React.PropTypes.func,
+	onKeyDown: React.PropTypes.func
+};
+
+
+export default DatePicker;

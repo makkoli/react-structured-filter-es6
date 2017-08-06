@@ -1,39 +1,46 @@
-/**
- * @jsx React.DOM
- */
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-var React = window.React || require('react');
+class Token extends Component {
 
-/**
- * Encapsulates the rendering of an option that has been "selected" in a
- * TypeaheadTokenizer
- */
-var Token = React.createClass({
-  propTypes: {
-    children: React.PropTypes.object,
-    onRemove: React.PropTypes.func
-  },
+	_makeCloseButton() {
+		if (!this.props.onRemove) {
+			return;
+		}
 
-  render: function() {
-    return (
-      <div {...this.props} className="typeahead-token">
-        {this.props.children["category"]} {this.props.children["operator"]} "{this.props.children["value"]}"
-        {this._makeCloseButton()}
-      </div>
-    );
-  },
+		const onClickClose = (event) => {
+			this.props.onRemove(this.props.children);
+			event.preventDefault();
+		};
 
-  _makeCloseButton: function() {
-    if (!this.props.onRemove) {
-      return "";
-    }
-    return (
-      <a className="typeahead-token-close" href="#" onClick={function(event) {
-          this.props.onRemove(this.props.children);
-          event.preventDefault();
-        }.bind(this)}>&#x00d7;</a>
-    );
-  }
-});
+		return (
+			<a 
+				className="typeahead-token-close"
+				href="#" 
+				onClick={onClickClose.bind(this)}
+			>
+					&#x00d7;
+			</a>
+	       );
+	}
 
-module.exports = Token;
+	render() {
+	
+		return (
+			<div
+				{...this.props}
+				className="typeahead-token"
+			>
+				{this.props.children['category']} {this.props.children['operator']} {this.props.children['value']}
+				{this._makeCloseButton()}
+			</div>
+	       );
+	}
+}
+
+Token.propTypes = {
+	children: React.PropTypes.object,
+	onRemove: React.PropTypes.func
+};
+
+export default Token;

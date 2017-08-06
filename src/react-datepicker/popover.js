@@ -1,79 +1,76 @@
-/** @jsx React.DOM */
+import React, { Component } from 'react';
+import Tether from 'tether';
 
-var React = require('react/addons');
-var Tether = require('tether/tether');
+class Popover extends Component {
 
+	componentWillMount() {
+		popoverContainer = document.createElement('span');
+		popoverContainer.className = 'datepicker__container';
 
-var Popover = React.createClass({
-  displayName: 'Popover',
+		this._popoverElement = popoverContainer;
 
-  componentWillMount: function() {
-    popoverContainer = document.createElement('span');
-    popoverContainer.className = 'datepicker__container';
+		document.querySelector('body').appendChild(this._popoverElement);
+	}
 
-    this._popoverElement = popoverContainer;
+	componentDidMount() {
+		this._renderPopover();
+	}
 
-    document.querySelector('body').appendChild(this._popoverElement);
-  },
+	componentDidUpdate() {
+		this._renderPopover();
+	}
 
-  componentDidMount: function() {
-    this._renderPopover();
-  },
+	_popoverComponent() {
+		let className = this.props.className;
 
-  componentDidUpdate: function() {
-    this._renderPopover();
-  },
+		return (
+			<div className={className}>
+				{this.props.children}
+			</div>
+		);
+	}
 
-  _popoverComponent: function() {
-    var className = this.props.className;
-    return (
-      <div className={className}>
-        {this.props.children}
-      </div>
-    );
-  },
+	_tetherOptions() {
+		return {
+			element: this._popoverElement,
+			target: this.getDOMNode().parentElement,
+			attachment: 'top left',
+			targetAttachment: 'bottom left',
+			targetOffset: '10px 0',
+			optimizations: {
+				moveElement: false	// always move to <body> anyway
+			},
+			constraints: [
+				{
+					to: 'window',
+					attachment: 'together',
+					pin: true
+				}
+			]
+		};
+	}
 
-  _tetherOptions: function() {
-    return {
-      element: this._popoverElement,
-      target: this.getDOMNode().parentElement,
-      attachment: 'top left',
-      targetAttachment: 'bottom left',
-      targetOffset: '10px 0',
-      optimizations: {
-        moveElement: false // always moves to <body> anyway!
-      },
-      constraints: [
-        {
-          to: 'window',
-          attachment: 'together',
-          pin: true
-        }
-      ]
-    };
-  },
+	_renderPopover() {
+		React.render(this._popoverComponent(), this._popoverElement);
 
-  _renderPopover: function() {
-    React.render(this._popoverComponent(), this._popoverElement);
+		if (this._tether != null) {
+			this._tether.setOptions(this._tetherOptions());
+		} else {
+			this._tether = new Tether(this._tetherOptions());
+		}
+	}
 
-    if (this._tether != null) {
-      this._tether.setOptions(this._tetherOptions());
-    } else {
-      this._tether = new Tether(this._tetherOptions());
-    }
-  },
+	componentWillUnmount() {
+		this._tether.destroy();
+		React.unmountComponentAtNode(this._popoverElement);
+		if (this._popoverElement.parentNode) {
+			this._popoverElement.parentNode.removeChild(this._popoverElement);
+		}
+	}
 
-  componentWillUnmount: function() {
-    this._tether.destroy();
-    React.unmountComponentAtNode(this._popoverElement);
-    if (this._popoverElement.parentNode) {
-      this._popoverElement.parentNode.removeChild(this._popoverElement);
-    }
-  },
+	render() {
+		return <span />;
+	}
+}
 
-  render: function() {
-    return <span/>;
-  }
-});
-
-module.exports = Popover;
+export default Popover;

@@ -1,10 +1,9 @@
-/** @jsx React.DOM */
-var React = require('react');
-var ExampleTable = require('./ExampleTable.jsx');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ExampleTable from './ExampleTable.jsx';
 
-React.render(
+ReactDOM.render(
   <div className="container">
-
     <div className="navbar navbar-default">
       <div className="container-fluid">
         <div className="navbar-header">
