@@ -24,13 +24,20 @@ class TypeaheadOption extends Component {
 
 	// prevent default when clicking an option
 	_onClick() {
+
 		return this.props.onClick();
 	}
 
 	// render all options for the category
 	render() {
+		let classes = {
+			hover: this.props.hover
+		};
+		classes[this.props.customClasses.listItem] = !!this.props.customClasses.listItem;
+		let classList = classSet(classes);
+
 		return (
-			<li className={classList} onClick={this._onClick}>
+			<li className={classList} onClick={this._onClick.bind(this)}>
 				<a
 					href="#"
 					className={this._getClasses()}

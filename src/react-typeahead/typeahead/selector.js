@@ -39,6 +39,7 @@ class TypeaheadSelector extends Component {
 	}
 
 	_onClick(result) {
+		console.log('option selected', result);
 		this.props.onOptionSelected(result);
 	}
 

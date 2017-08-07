@@ -28,9 +28,9 @@ class DateInput extends Component {
 
 	toggleFocus(focus) {
 		if (focus) {
-			this.refs.entry.getDOMNode().focus();
+			this.entry.getDOMNode().focus();
 		} else {
-			this.refs.entry.getDOMNode().blur();
+			this.entry.getDOMNode().blur();
 		}
 	}
 

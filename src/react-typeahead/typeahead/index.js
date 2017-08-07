@@ -17,7 +17,6 @@ class Typeahead extends Component {
 	
 	constructor(props) {
 		super(props);
-		console.log('typeahead props', props);
 
 		this.state = {
 			// set of all options
@@ -58,11 +57,13 @@ class Typeahead extends Component {
 		return result;
 	}
 				
-	setEntryText(value) {
-		if (this.refs.entry != null) {
-			this.refs.entry.getDOMNode().value = value;
+	setEntryText(context, value) {
+		console.log('set entry text this', this);
+		console.log('set entry text', context);
+		if (context.typeahead.instanceRef.entry != null) {
+			context.typeahead.instanceRef.entry.value = value;
 		}
-		this._onTextEntryUpdated();
+		this._onTextEntryUpdated(context);
 	}
 
 	_renderIncrementalSearchResults() {
@@ -85,14 +86,16 @@ class Typeahead extends Component {
 				ref={sel => this.sel = sel}
 				options={this.state.visible}
 				header={this.state.header}
-				onOptionSelected={this._onOptionSelected}
+				onOptionSelected={this._onOptionSelected.bind(this)}
 				customClasses={this.props.customClasses}
 			/>
 	       );
 	}
 
 	_onOptionSelected(option) {
-		let nEntry = this.refs.entry.getDOMNode();
+		console.log(this);
+		console.log('set on option selected', this.entry);
+		let nEntry = this.entry;
 		nEntry.focus();
 		nEntry.value = option;
 
@@ -108,16 +111,20 @@ class Typeahead extends Component {
 		this.props.onOptionSelected(option);
 	}
 
-	_onTextEntryUpdated() {
+	_onTextEntryUpdated(context) {
+		console.log('set entry text updated', context);
 		let value = '';
-		if (this.refs.entry != null) {
-			value = this.refs.entry.getDOMNode().value;
+		if (context.typeahead.instanceRef.entry != null) {
+			value = context.typeahead.instanceRef.entry.value;
 		}
+
+		console.log('on text entry updated this', this);
+		let options = this.state.options;
 
 		this.setState({
 			visible: this.getOptionsForValue(
-						 value, 
-						 this.state.options
+						value, 
+						options
 				),
 			selection: null,
 			entryValue: value
@@ -125,20 +132,20 @@ class Typeahead extends Component {
 	}
 
 	_onEnter(event) {
-		if (!this.refs.sel.state.selection) {
+		if (!this.sel.state.selection) {
 			return this.props.onKeyDown(event);
 		}
 
-		this._onOptionSelected(this.refs.sel.state.selection);
+		this._onOptionSelected(this.sel.state.selection);
 	}
 
 	_onEscape() {
-		this.refs.sel.setSelectionIndex(null);
+		this.sel.setSelectionIndex(null);
 	}
 
 	_onTab(event) {
-		let option = this.refs.sel.state.selection ?
-			this.refs.sel.state.selection :
+		let option = this.sel.state.selection ?
+			this.sel.state.selection :
 			this.state.visible[0];
 		this._onOptionSelected(option)
 	}
@@ -147,8 +154,8 @@ class Typeahead extends Component {
 	eventMap(event) {
 		let events = {};
 
-		events[KeyEvent.DOM_VK_UP] = this.refs.sel.navUp;
-		events[KeyEvent.DOM_VK_DOWN] = this.refs.sel.navDown;
+		events[KeyEvent.DOM_VK_UP] = this.sel.navUp;
+		events[KeyEvent.DOM_VK_DOWN] = this.sel.navDown;
 		events[KeyEvent.DOM_VK_RETURN] = events[KeyEvent.DOM_VK_ENTER] = this._onEnter;
 		events[KeyEvent.DOM_VK_ESCAPE] = this._onEscape;
 		events[KeyEvent.DOM_VK_TAB] = this._onTab;
@@ -177,7 +184,7 @@ class Typeahead extends Component {
 		// if there are no visible elements, dont perform
 		// selector navigation
 		// Just pass this up to upstream onKeyDown handler
-		if (!this.refs.sel) {
+		if (!this.sel) {
 			return this.props.onKeyDown(event);
 		}
 
@@ -234,9 +241,9 @@ class Typeahead extends Component {
 
 	inputRef() {
 		if (this._showDatePicker()) {
-			return this.refs.datepicker.refs.dateinput.refs.entry;
+			return this.datepicker.refs.dateinput.refs.entry;
 		} else {
-			return this.refs.entry;
+			return this.entry;
 		}
 	}
 
@@ -257,14 +264,14 @@ class Typeahead extends Component {
 				<span
 					ref={input => this.input = input}
 					className={classList}
-					onFocus={this._onFocus}
+					onFocus={this._onFocus.bind(this)}
 				>
 					<DatePicker
 						ref={datepicker => this.datepicker = datepicker}
-						dateFormat="YYYY-MM-DD"
+						dateFormat={"YYYY-MM-DD"}
 						selected={moment()}
-						onChange={this._handleDateChange}
-						onKeyDown={this._onKeyDown}
+						onChange={this._handleDateChange.bind(this)}
+						onKeyDown={this._onKeyDown.bind(this)}
 					/>
 				</span>
 			);
@@ -275,7 +282,7 @@ class Typeahead extends Component {
 			<span
 				ref={input => this.input = input}
 				className={classList}
-				onFocus={this._onFocus}
+				onFocus={this._onFocus.bind(this)}
 			>
 				<input
 					ref={entry => this.entry = entry}
@@ -283,9 +290,10 @@ class Typeahead extends Component {
 					placeholder={this.props.placeholder}
 					className={inputClassList}
 					defaultValue={this.state.entryValue}
-					onChange={this._onTextEntryUpdated}
-					onKeyDown={this._onKeyDown}
+					onChange={this._onTextEntryUpdated.bind(this)}
+					onKeyDown={this._onKeyDown.bind(this)}
 				/>
+				{this._renderIncrementalSearchResults()}
 			</span>
 	       );
 	}
@@ -306,7 +314,7 @@ Typeahead.propTypes = {
 Typeahead.defaultProps = {
 	options: [],
 	header: 'Category',
-	datatype: 'string',
+	datatype: 'text',
 	customClasses: {},
 	defaultValue: '',
 	placeholder: '',

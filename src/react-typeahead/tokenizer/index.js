@@ -63,6 +63,8 @@ class TypeaheadTokenizer extends Component {
 				return option.category;
 			});
 
+			console.log('category options', categories);
+
 			return categories;
 
 		} else if (this.state.operator == '') {
@@ -76,6 +78,7 @@ class TypeaheadTokenizer extends Component {
 					categoryType == 'date') {
 						return ['==', '!=', '<', '<=', '>', '>='];
 			} else {
+				console.log(categoryType);
 				console.log("WARNING: Unknown category type in tokenizer");
 			}
 		} else {
@@ -142,7 +145,7 @@ class TypeaheadTokenizer extends Component {
 
 		// Remove a token only when backspace pressed at 
 		// beginning of line without a selection
-		let entry = this.refs.typeahead.inputRef().getDOMNode();
+		let entry = this.typeahead.instanceRef.entry;
 		if (entry.selectionStart == entry.selectionEnd && 
 				entry.selectionStart == 0) {
 			if (this.state.operator !== '') {
@@ -191,7 +194,8 @@ class TypeaheadTokenizer extends Component {
 			this.setState({
 				category: value
 			});
-			this.refs.typeahead.setEntryText('');
+			console.log('calling set entry text in add token for value', this.typeahead.instanceRef.entry);
+			this.typeahead.instanceRef.__proto__.setEntryText(this, '');
 			return;
 		}
 
@@ -200,7 +204,7 @@ class TypeaheadTokenizer extends Component {
 			this.setState({
 				operator: value
 			});
-			this.refs.typeahead.setEntryText('');
+			this.typeahead.instanceRef.__proto__.setEntryText('');
 			return;
 		}
 
@@ -214,7 +218,7 @@ class TypeaheadTokenizer extends Component {
 		this.setState({
 			selected: this.state.selected.concat(newValue)
 		});
-		this.refs.typeahead.setEntryText('');
+		this.typeahead.instanceRef.__proto__.setEntryText('');
 		
 		// call function to update state so table re renders
 		this.props.onTokenAdd(this.state.selected);
@@ -250,8 +254,8 @@ class TypeaheadTokenizer extends Component {
 							options={this._getOptionsForTypeahead()}
 							header={this._getHeader()}
 							datatype={this._getInputType()}
-							onOptionSelected={this._addTokenForValue}
-							onKeyDown={this._onKeyDown}
+							onOptionSelected={this._addTokenForValue.bind(this)}
+							onKeyDown={this._onKeyDown.bind(this)}
 							placeholder={this.props.placeholder}
 							defaultValue={this.props.defaultValue}
 						/>
